@@ -1,12 +1,7 @@
 import os
 from dotenv import load_dotenv
 from fastapi import FastAPI, Header, HTTPException, Depends
-from telegram import Update, Bot
-from pydantic import BaseModel
-
-class TelegramUpdate(BaseModel):
-    update_id: int
-    message: dict
+from telegram import Bot
 
 app = FastAPI()
 
@@ -16,12 +11,14 @@ load_dotenv()
 # Read the variable from the environment (or .env file)
 bot_token = os.getenv('BOT_TOKEN')
 secret_token = os.getenv("SECRET_TOKEN")
-#webhook_url = os.getenv('CYCLIC_URL', 'http://localhost:8181') + "/webhook/"
+# webhook_url = os.getenv('CYCLIC_URL', 'http://localhost:8181') + "/webhook/"
 
 bot = Bot(token=bot_token)
-#bot.set_webhook(url=webhook_url)
-#webhook_info = bot.get_webhook_info()
-#print(webhook_info)
+
+
+# bot.set_webhook(url=webhook_url)
+# webhook_info = bot.get_webhook_info()
+# print(webhook_info)
 
 def auth_telegram_token(x_telegram_bot_api_secret_token: str = Header(None)) -> str:
     # return true # uncomment to disable authentication
@@ -29,31 +26,22 @@ def auth_telegram_token(x_telegram_bot_api_secret_token: str = Header(None)) -> 
         raise HTTPException(status_code=403, detail="Not authenticated")
     return x_telegram_bot_api_secret_token
 
+
 @app.post("/webhook/")
-async def handle_webhook(update: TelegramUpdate, token: str = Depends(auth_telegram_token)):
-#    chat_id = update.message["chat"]["id"]
-#    text = update.message["text"]
-    title=""
+async def handle_webhook(update, token: str = Depends(auth_telegram_token)):
+    title = ""
     try:
         print("Update:", update)
-        user = update.message["from"]["first_name"]
-        chat_id = update.message["chat"]["id"]
-        message_id = update.message["message_id"]
+        user = update["message"]["from"]["first_name"]
+        chat_id = update["message"]["chat"]["id"]
+        message_id = update["message"]["message_id"]
         message = user + " постив Труху, ми тут такого не любимо!!!"
-        title = update.message["forward_origin"]["chat"]["title"]
+        title = update["message"]["forward_origin"]["chat"]["title"]
     except Exception as e:
         print('Error', str(e))
     if "Труха⚡️" in title:
-        await bot.deleteMessage(chat_id=chat_id,message_id=message_id)
+        await bot.deleteMessage(chat_id=chat_id, message_id=message_id)
         await bot.send_message(chat_id=chat_id, text=message)
         with open('cat.png', 'rb') as photo:
             await bot.send_photo(chat_id=chat_id, photo=photo)
-
-#    if text == "/start":
-#        with open('hello.gif', 'rb') as photo:
-#            await bot.send_photo(chat_id=chat_id, photo=photo)
-#        await bot.send_message(chat_id=chat_id, text="Welcome to Cyclic Starter Python Telegram Bot!")
-#    else:
-#        await bot.send_message(chat_id=chat_id, reply_to_message_id=update.message["message_id"], text="Yo!")
-
     return {"ok": True}
