@@ -1,6 +1,7 @@
 import os
+import json
 from dotenv import load_dotenv
-from fastapi import FastAPI, Header, HTTPException, Depends
+from fastapi import FastAPI, Header, HTTPException, Depends, Request
 from telegram import Bot
 
 app = FastAPI()
@@ -28,10 +29,11 @@ def auth_telegram_token(x_telegram_bot_api_secret_token: str = Header(None)) -> 
 
 
 @app.post("/webhook/")
-async def handle_webhook(update, token: str = Depends(auth_telegram_token)):
+async def handle_webhook(request: Request, token: str = Depends(auth_telegram_token)):
+    print("Request:", request)
     title = ""
     try:
-        print("Update:", update)
+        update = await request.json()
         user = update["message"]["from"]["first_name"]
         chat_id = update["message"]["chat"]["id"]
         message_id = update["message"]["message_id"]
