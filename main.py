@@ -33,6 +33,7 @@ def auth_telegram_token(x_telegram_bot_api_secret_token: str = Header(None)) -> 
 async def handle_webhook(update: TelegramUpdate, token: str = Depends(auth_telegram_token)):
 #    chat_id = update.message["chat"]["id"]
 #    text = update.message["text"]
+    print("Message:", update.message)
     print("User:", update.message['from']['first_name'])
     print("From:", update.message['forward_origin']['chat']['title'])
 
