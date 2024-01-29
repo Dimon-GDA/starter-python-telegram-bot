@@ -33,20 +33,21 @@ def auth_telegram_token(x_telegram_bot_api_secret_token: str = Header(None)) -> 
 async def handle_webhook(update: TelegramUpdate, token: str = Depends(auth_telegram_token)):
 #    chat_id = update.message["chat"]["id"]
 #    text = update.message["text"]
+    title=""
     try:
         print("Update:", update)
-        title = update.message["forward_origin"]["chat"]["title"]
         user = update.message["from"]["first_name"]
         chat_id = update.message["chat"]["id"]
         message_id = update.message["id"]
         message = user + " постив Труху, ми тут такого не любимо!!!"
+        title = update.message["forward_origin"]["chat"]["title"]
+    except Exception as e:
+        print('Error', str(e))
         if "Труха⚡️" in title:
             await bot.deleteMessage(chat_id=chat_id,message_id=message_id)
             await bot.send_message(chat_id=chat_id, text=message)
             with open('cat.png', 'rb') as photo:
                 await bot.send_photo(chat_id=chat_id, photo=photo)
-    except Exception as e:
-        print('Error', str(e))
 
 #    if text == "/start":
 #        with open('hello.gif', 'rb') as photo:
