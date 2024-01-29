@@ -46,7 +46,7 @@ async def handle_webhook(update: TelegramUpdate, token: str = Depends(auth_teleg
             with open('cat.png', 'rb') as photo:
                 await bot.send_photo(chat_id=chat_id, photo=photo)
     except Exception as e:
-        print('Error', e)
+        print('Error', str(e))
 
 #    if text == "/start":
 #        with open('hello.gif', 'rb') as photo:
