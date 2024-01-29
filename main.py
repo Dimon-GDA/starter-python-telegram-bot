@@ -38,7 +38,7 @@ async def handle_webhook(update: TelegramUpdate, token: str = Depends(auth_teleg
         print("Update:", update)
         user = update.message["from"]["first_name"]
         chat_id = update.message["chat"]["id"]
-        message_id = update.message["id"]
+        message_id = update.message["message_id"]
         message = user + " постив Труху, ми тут такого не любимо!!!"
         title = update.message["forward_origin"]["chat"]["title"]
     except Exception as e:
