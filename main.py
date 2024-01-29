@@ -39,11 +39,11 @@ async def handle_webhook(request: Request, token: str = Depends(auth_telegram_to
         message_id = update["message"]["message_id"]
         message = user + " постив Труху, ми тут такого не любимо!!!"
         title = update["message"]["forward_origin"]["chat"]["title"]
+        if "Труха⚡️" in title:
+            await bot.deleteMessage(chat_id=chat_id, message_id=message_id)
+            await bot.send_message(chat_id=chat_id, text=message)
+            with open('cat.png', 'rb') as photo:
+                await bot.send_photo(chat_id=chat_id, photo=photo)
     except Exception as e:
         print('Error', str(e))
-    if "Труха⚡️" in title:
-        await bot.deleteMessage(chat_id=chat_id, message_id=message_id)
-        await bot.send_message(chat_id=chat_id, text=message)
-        with open('cat.png', 'rb') as photo:
-            await bot.send_photo(chat_id=chat_id, photo=photo)
     return {"ok": True}
