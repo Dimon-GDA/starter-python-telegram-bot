@@ -37,7 +37,7 @@ async def handle_webhook(request: Request, token: str = Depends(auth_telegram_to
         user = update["message"]["from"]["first_name"]
         chat_id = update["message"]["chat"]["id"]
         message_id = update["message"]["message_id"]
-        message = user + " постив Труху, ми тут такого не любимо!!!"
+        message =  user + " не пости Труху! Ми тут такого не любимо!!!"
         title = update["message"]["forward_origin"]["chat"]["title"]
         if "Труха⚡️" in title:
             await bot.deleteMessage(chat_id=chat_id, message_id=message_id)
